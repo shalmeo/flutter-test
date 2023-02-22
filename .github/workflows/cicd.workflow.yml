@@ -18,11 +18,14 @@ jobs:
       with:
         distribution: 'zulu'
         java-version: '11'
-    - name: build release 
-      run: ./gradlew assembleRelease
-    - name: upload artifact to Firebase App Distribution
-      uses: wzieba/Firebase-Distribution-Github-Action@v1
+    - name: Install Flutter
+      uses: subosito/flutter-action@v2
       with:
-        appId: ${{secrets.FIREBASE_APP_ID}}
-        serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-        file: app/build/outputs/apk/release/app-release-unsigned.apk
+        flutter-version: '3.7.3'
+        channel: 'dev'
+    - run: flutter build apk
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: release-apk
+        path: build/app/outputs/apk/release/app-release.apk
